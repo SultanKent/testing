@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.select-menu {
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  align-items: center;
+  justify-content: center;
+}
+
+.select-one {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.select-menu .select-btn {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+  background-color: rgba(34,34,49,.9);
+  border: 2px solid rgba(91,95,122,.9);
+  color: #fbe0cf;
+  font-size: 18px;
+  white-space: nowrap;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+  transition: border-color 0.5s ease;
+}
+
+.select-btn:hover {
+  border-color: #fbe0cf;
+}
+
+.select-btn .icon-arrow {
+  font-size: 25px;
+  transition: 1s;
+  width: 35px;
+}
+
+.select-btn.active .icon-arrow {
+  transform: rotate(180deg);
+}
+
+.select-menu .list {
+  background: rgba(1,4,25,.9);
+  position: absolute;
+  transform: translateY(50px);
+  width: 200px;
+}
+
+.list .option {
+  background: rgba(1,4,25,.9);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 55px;
+  padding: 0 16px;
+  cursor: pointer;
+  opacity: 0;
+  transform-origin: top;
+  transform: scale(0) translateY(-65px);
+  margin-bottom: -55px;
+  transition: opacity 1s ease-in-out;
+  white-space: nowrap;
+}
+
+.list .option .selected {
+  background-color: #a0a3b4;
+}
+
+.select-btn.active~.list .option {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+  transform: scale(1) translateY(0);
+  margin-bottom: 0;
+  background-color: rgba(1,4,25,.9);
+  color: #5b5f7a;
+}
+
+.list .option:hover {
+  background: #ccc0c0;
+}
+
+.list .option:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.list .option:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.option .option-text {
+  font-size: 18px;
+  color: #333;
+}
+
+@media(max-width: 800px) {
+  .select-menu {
+    flex-direction: column;
+    padding: 20px;
+  }
+  .select-one {
+    height: 250px;
+  }
+}
