@@ -21,7 +21,6 @@
 
 // setDefaultSelection();
 
-
 async function fetchJsonData(filePath) {
   try {
     const response = await fetch(filePath);
@@ -32,17 +31,38 @@ async function fetchJsonData(filePath) {
   }
 }
 
-function generateOptions(data, list, textElement, clickCallback) {
-  list.innerHTML = '';
+let selectedOption = null;
+
+function generateOptions(data, list, textElement, clickCallback, prefix = '') {
   for (const key in data) {
+    const optionText = prefix + (key.split('#')[1] || key);
+
+    
+    const existingOption = Array.from(list.children).find((opt) => opt.textContent === optionText);
+
+    if (existingOption) {
+      if (selectedOption === optionText) {
+        existingOption.classList.add('selected');
+      }
+
+      continue;
+    }
+
     const option = document.createElement('div');
     option.className = 'option';
-    const languageName = key.split('#')[1];
-    option.textContent = languageName || key;
+    option.textContent = optionText;
     list.appendChild(option);
 
     option.addEventListener('click', function () {
-      textElement.innerHTML = languageName || key;
+      list.querySelectorAll('.option').forEach(function (opt) {
+        opt.classList.remove('selected');
+      });
+
+      option.classList.add('selected');
+
+      selectedOption = optionText;
+
+      textElement.innerHTML = optionText;
       if (clickCallback) {
         clickCallback(data[key]);
       }
@@ -53,14 +73,12 @@ function generateOptions(data, list, textElement, clickCallback) {
   }
 }
 
-
-
-function populateOptions(data, list, textElement, nextList, nextTextElement) {
+function populateOptions(data, list, textElement, nextList, nextTextElement, prefix = '') {
   generateOptions(data, list, textElement, function (nextData) {
     if (nextList && nextTextElement) {
-      populateOptions(nextData, nextList, nextTextElement, null, null);
+      populateOptions(nextData, nextList, nextTextElement, null, null, prefix);
     }
-  });
+  }, prefix);
 }
 
 const seasonSelectBtn = document.getElementById('season-select-btn');
@@ -75,33 +93,36 @@ const seasonList = document.getElementById('season-list');
 const episodeList = document.getElementById('episode-list');
 const languageList = document.getElementById('language-list');
 
-
 const jsonFilePath = 'example.json';
+
 fetchJsonData(jsonFilePath).then((jsonData) => {
   seasonSelectBtn.addEventListener('click', function () {
+    closeOtherSelectMenus(seasonSelectBtn);
     episodeList.innerHTML = '';
     languageList.innerHTML = '';
     seasonSelectBtn.classList.toggle('active');
     if (seasonSelectBtn.classList.contains('active')) {
-      populateOptions(jsonData, seasonList, seasonText, episodeList, episodeText);
+      populateOptions(jsonData, seasonList, seasonText, episodeList, episodeText, 'Сезон ');
     }
   });
 
   episodeSelectBtn.addEventListener('click', function () {
+    closeOtherSelectMenus(episodeSelectBtn);
     languageList.innerHTML = '';
     episodeSelectBtn.classList.toggle('active');
     if (episodeSelectBtn.classList.contains('active')) {
-      const selectedSeason = seasonText.textContent;
+      const selectedSeason = seasonText.textContent.split(' ')[1];
       const episodes = jsonData[selectedSeason];
-      populateOptions(episodes, episodeList, episodeText, languageList, languageText);
+      populateOptions(episodes, episodeList, episodeText, languageList, languageText, 'Серия ');
     }
   });
 
   languageSelectBtn.addEventListener('click', function () {
+    closeOtherSelectMenus(languageSelectBtn);
     languageSelectBtn.classList.toggle('active');
     if (languageSelectBtn.classList.contains('active')) {
-      const selectedSeason = seasonText.textContent;
-      const selectedEpisode = episodeText.textContent;
+      const selectedSeason = seasonText.textContent.split(' ')[1];
+      const selectedEpisode = episodeText.textContent.split(' ')[1];
       const languages = jsonData[selectedSeason][selectedEpisode];
       if (languages) {
         generateOptions(languages, languageList, languageText);
@@ -109,3 +130,12 @@ fetchJsonData(jsonFilePath).then((jsonData) => {
     }
   });
 });
+
+function closeOtherSelectMenus(clickedBtn) {
+  const selectBtns = [seasonSelectBtn, episodeSelectBtn, languageSelectBtn];
+  selectBtns.forEach((btn) => {
+    if (btn !== clickedBtn && btn.classList.contains('active')) {
+      btn.classList.remove('active');
+    }
+  });
+}

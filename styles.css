@@ -33,7 +33,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
+  height: 50px;
   background-color: rgba(34,34,49,.9);
   border: 2px solid rgba(91,95,122,.9);
   color: #fbe0cf;
@@ -45,9 +45,9 @@ body {
   transition: border-color 0.5s ease;
 }
 
-.select-btn:hover {
+/* .select-btn:hover {
   border-color: #fbe0cf;
-}
+} */
 
 .select-btn .icon-arrow {
   font-size: 25px;
@@ -82,8 +82,8 @@ body {
   white-space: nowrap;
 }
 
-.list .option .selected {
-  background-color: #a0a3b4;
+.option.selected {
+  background-color: #a0a3b4!important; 
 }
 
 .select-btn.active~.list .option {
@@ -99,20 +99,15 @@ body {
   background: #ccc0c0;
 }
 
-.list .option:first-child {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.list .option:last-child {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+.select-one:nth-child(3), .select-one:nth-child(3) .list {
+  width: 220px;
 }
 
 .option .option-text {
   font-size: 18px;
   color: #333;
 }
+
 
 @media(max-width: 800px) {
   .select-menu {
