@@ -34,19 +34,10 @@ async function fetchJsonData(filePath) {
 let selectedOption = null;
 
 function generateOptions(data, list, textElement, clickCallback, prefix = '') {
+  list.innerHTML = ''; 
+
   for (const key in data) {
     const optionText = prefix + (key.split('#')[1] || key);
-
-    
-    const existingOption = Array.from(list.children).find((opt) => opt.textContent === optionText);
-
-    if (existingOption) {
-      if (selectedOption === optionText) {
-        existingOption.classList.add('selected');
-      }
-
-      continue;
-    }
 
     const option = document.createElement('div');
     option.className = 'option';
@@ -60,6 +51,7 @@ function generateOptions(data, list, textElement, clickCallback, prefix = '') {
 
       option.classList.add('selected');
 
+      
       selectedOption = optionText;
 
       textElement.innerHTML = optionText;
@@ -70,6 +62,11 @@ function generateOptions(data, list, textElement, clickCallback, prefix = '') {
       episodeSelectBtn.classList.remove('active');
       languageSelectBtn.classList.remove('active');
     });
+
+    
+    if (selectedOption === optionText) {
+      option.classList.add('selected');
+    }
   }
 }
 
@@ -97,7 +94,6 @@ const jsonFilePath = 'example.json';
 
 fetchJsonData(jsonFilePath).then((jsonData) => {
   seasonSelectBtn.addEventListener('click', function () {
-    closeOtherSelectMenus(seasonSelectBtn);
     episodeList.innerHTML = '';
     languageList.innerHTML = '';
     seasonSelectBtn.classList.toggle('active');
@@ -107,7 +103,6 @@ fetchJsonData(jsonFilePath).then((jsonData) => {
   });
 
   episodeSelectBtn.addEventListener('click', function () {
-    closeOtherSelectMenus(episodeSelectBtn);
     languageList.innerHTML = '';
     episodeSelectBtn.classList.toggle('active');
     if (episodeSelectBtn.classList.contains('active')) {
@@ -118,7 +113,6 @@ fetchJsonData(jsonFilePath).then((jsonData) => {
   });
 
   languageSelectBtn.addEventListener('click', function () {
-    closeOtherSelectMenus(languageSelectBtn);
     languageSelectBtn.classList.toggle('active');
     if (languageSelectBtn.classList.contains('active')) {
       const selectedSeason = seasonText.textContent.split(' ')[1];
@@ -130,12 +124,3 @@ fetchJsonData(jsonFilePath).then((jsonData) => {
     }
   });
 });
-
-function closeOtherSelectMenus(clickedBtn) {
-  const selectBtns = [seasonSelectBtn, episodeSelectBtn, languageSelectBtn];
-  selectBtns.forEach((btn) => {
-    if (btn !== clickedBtn && btn.classList.contains('active')) {
-      btn.classList.remove('active');
-    }
-  });
-}
